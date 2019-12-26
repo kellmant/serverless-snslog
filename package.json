@@ -1,0 +1,23 @@
+{
+  "name": "snslog",
+  "version": "1.0.0",
+  "description": "<dl> <dt><a href=\"#module_handler\">handler</a></dt> <dd><p>Lambda serverless handler.<br>Creates a SNS topic and allows subscribe and post to the topic through simple HTTPS calls with x-api-key header token Dependant on the serverless framework.</p> </dd> </dl>",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kellmant/serverless-snslog.git"
+  },
+  "keywords": [],
+  "author": "Kellman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kellmant/serverless-snslog/issues"
+  },
+  "homepage": "https://github.com/kellmant/serverless-snslog#readme",
+  "dependencies": {
+    "serverless-domain-manager": "^3.3.0"
+  }
+}

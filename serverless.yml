@@ -8,12 +8,31 @@
 # define a name for your resources in the display name
 # as the sending name for you service.
 #
+# This configuration uses the serverless domain manager
+# for a custom domain deployment. To use this
+# ensure you have a certificate issued from AWS for your domain
+# and have the domain manager plugin installed
+#     npm install serverless-domain-manager --save
+# then set the domainName value in the custom fields.
+# If you're using a certificate that doesn't exactly match your domain name, 
+# such as a wildcard certificate, you'll need to specify the 
+# certificate name with a certificateName property under customDomain.
+# For the first time deployment of a new domain, you can create 
+# your custom domain with a single command: 
+#     sls create_domain 
+# once a domain is registered with the API gateway it can be reused 
+# in other configurations for deployment without creating again.
+#  
 # For full config options, check the docs:
 #    docs.serverless.com
 #
 # Happy Coding!
 
+
 service: mylogs
+
+plugins:
+  - serverless-domain-manager
 
 custom:
   displayName: 'My Alerts'
@@ -31,6 +50,12 @@ custom:
         - Fn::GetAtt:
           - MyCustomTopic
           - TopicName
+  customDomain:
+    domainName: 'api.seclab.cloud' # change to your custom domain
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+            
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
