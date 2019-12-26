@@ -1,0 +1,104 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+#
+# define a service: name and topicName to customize
+# define a name for your resources in the display name
+# as the sending name for you service.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: mylogs
+
+custom:
+  displayName: 'My Alerts'
+  topicName: mylogs-alert
+  # cloud formation intrinstic function to get ARN of topic.
+  # `MyCustomTopic` : references the cloudformation in `resources`
+  topicArn:
+    Fn::Join:
+      - ''
+      - - 'arn:aws:sns:'
+        - Ref: AWS::Region
+        - ":"
+        - Ref: AWS::AccountId
+        - ":"
+        - Fn::GetAtt:
+          - MyCustomTopic
+          - TopicName
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  apiKeys:
+    - ${self:service}
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+        - "sns:RemovePermission"
+        - "sns:SetTopicAttributes"
+        - "sns:DeleteTopic"
+        - "sns:ListSubscriptionsByTopic"
+        - "sns:GetTopicAttributes"
+        - "sns:Receive"
+        - "sns:AddPermission"
+        - "sns:Subscribe"
+        - "sns:UnSubscribe"
+      Resource: ${self:custom.topicArn}
+
+# you can define service wide environment variables here
+  environment:
+    TOPIC_NAME: ${self:custom.topicName}
+    TOPIC_ARN: ${self:custom.topicArn}
+
+functions:
+  pub:
+    handler: handler.pub
+    memorySize: 128
+    description: Publish message from post 
+    events:
+            - http:
+                    path: pub
+                    method: post
+                    private: true
+  sub:
+    handler: handler.sub
+    memorySize: 128
+    description: Subscribe to messages
+    events:
+            - http:
+                    path: sub
+                    method: post
+                    private: true
+  unsub:
+    handler: handler.unsub
+    memorySize: 128
+    description: unsubscribe to messages
+    events:
+            - http:
+                    path: unsub
+                    method: post
+                    private: true
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    MyCustomTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: ${self:custom.displayName}
+        TopicName: ${self:custom.topicName}
