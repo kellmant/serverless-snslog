@@ -29,7 +29,7 @@
 # Happy Coding!
 
 
-service: mylogs
+service: msgbus
 
 plugins:
   - serverless-domain-manager
@@ -52,10 +52,10 @@ custom:
           - TopicName
   customDomain:
     domainName: 'api.seclab.cloud' # change to your custom domain
-    basePath: ''
+    basePath: ${self:service}
     stage: ${self:provider.stage}
     createRoute53Record: true
-            
+
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
